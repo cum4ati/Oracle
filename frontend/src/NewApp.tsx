@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import Shakespeare from "./pages/Shakespeare";
 
 class MainApp extends React.Component<{}, { pageToDisplay: string }> {
