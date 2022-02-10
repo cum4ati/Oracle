@@ -30,10 +30,10 @@ async def test_react():
     return {"status": "succ"}
 
 
-@app.post('/api/paraphrase')
+@app.post('/api/paraphrase', tags=['ml_models_endpoint'])
 async def paraphrase(data: ParaphraseRequestModel):
     summary: Summary = Summary()
     print(data)
-    summarized_data = summary.generate_summary(data.text)
+    summarized_data = summary.generate_summary(data.text, data.sentences_to_return)
     return {"text": data.text,
             "summarized": summarized_data}

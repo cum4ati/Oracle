@@ -5,15 +5,19 @@ import {Button, Form} from "react-bootstrap";
 
 class Shakespeare extends React.Component<{}, {}> {
     state = {
-        val: ""
+        textToSummarize: "sentences",
+        sentencesToReturn: 5
     };
 
     onSubmit = () => {
-        console.log(this.state.val);
+        console.log(this.state.textToSummarize);
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({text: this.state.val})
+            body: JSON.stringify({
+                text: this.state.textToSummarize,
+                sentences_to_return: this.state.sentencesToReturn
+            })
         }
 
         function onResponseFromBackend(response: any) {
@@ -42,12 +46,19 @@ class Shakespeare extends React.Component<{}, {}> {
                 <h1>Shakespeare</h1>
                 <Form.Group className="m-0">
                     <Form.Control
-                        className="textFeedback"
+                        className="textToSummarize"
                         as="textarea"
-                        placeholder="feedback"
-                        value={this.state.val}
-                        onChange={e => this.setState({val: e.target.value})}
+                        placeholder="Input text you want to summarize"
+                        value={this.state.textToSummarize}
+                        onChange={e => this.setState({textToSummarize: e.target.value})}
                         type="text"/>
+                    <Form.Control
+                        className="sentencesToReturn"
+                        as="textarea"
+                        placeholder="sentences"
+                        value={this.state.sentencesToReturn}
+                        onChange={e => this.setState({sentencesToReturn: e.target.value})}
+                        type="number"/>
                     <Button
                         className="btnFormSend"
                         variant="outline-success"
