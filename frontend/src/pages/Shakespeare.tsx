@@ -1,14 +1,11 @@
 import React from 'react';
-import logo from '../logo.svg';
 import '../App.css';
-import APIButton from "../components/APIButton";
-import ReactDOM from "react-dom";
-import {Button, Form, FormText} from "react-bootstrap";
+import {Button, Form} from "react-bootstrap";
 
 
 class Shakespeare extends React.Component<{}, {}> {
     state = {
-        val: "dasdsa"
+        val: ""
     };
 
     onSubmit = () => {
@@ -22,7 +19,7 @@ class Shakespeare extends React.Component<{}, {}> {
         function onResponseFromBackend(response: any) {
             let element = document.getElementById("backendResponse")
             // @ts-ignore
-            element.textContent = response.text
+            element.textContent = response.summarized
         }
 
 

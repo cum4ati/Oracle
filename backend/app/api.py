@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .models.ParaphraseRequestModel import ParaphraseRequestModel
+from .networks.Summary import Summary
 
 app = FastAPI()
 
@@ -31,5 +32,8 @@ async def test_react():
 
 @app.post('/api/paraphrase')
 async def paraphrase(data: ParaphraseRequestModel):
+    summary: Summary = Summary()
     print(data)
-    return data
+    summarized_data = summary.generate_summary(data.text)
+    return {"text": data.text,
+            "summarized": summarized_data}
