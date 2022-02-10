@@ -1,5 +1,5 @@
 import React from "react";
-import Shakespeare from "./pages/Shakespeare";
+import Shakespeare from "./Shakespeare";
 
 class MainApp extends React.Component<{}, { pageToDisplay: string }> {
     constructor(props: any) {
