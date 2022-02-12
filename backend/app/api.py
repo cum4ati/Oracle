@@ -1,8 +1,8 @@
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from .models.ParaphraseRequestModel import ParaphraseRequestModel
-from .networks.Summary import Summary
+from .routes.shakespeare import router
 
 app = FastAPI()
 
@@ -11,9 +11,11 @@ origins = [
     "localhost:3000"
 ]
 
+app.include_router(router)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=['*'],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
@@ -28,12 +30,3 @@ async def read_root() -> dict:
 @app.get("/test_react")
 async def test_react():
     return {"status": "succ"}
-
-
-@app.post('/api/paraphrase', tags=['ml_models_endpoint'])
-async def paraphrase(data: ParaphraseRequestModel):
-    summary: Summary = Summary()
-    print(data)
-    summarized_data = summary.generate_summary(data.text, data.sentences_to_return)
-    return {"text": data.text,
-            "summarized": summarized_data}

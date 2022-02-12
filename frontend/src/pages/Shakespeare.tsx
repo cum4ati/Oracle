@@ -1,6 +1,6 @@
 import React from 'react';
-import '../App.css';
-import {Button, Form} from "react-bootstrap";
+import '../Shakespeare.css';
+import {Button, Container, Form, Row} from "react-bootstrap";
 
 
 class Shakespeare extends React.Component<{}, {}> {
@@ -9,9 +9,15 @@ class Shakespeare extends React.Component<{}, {}> {
         sentencesToReturn: 5
     };
 
-    onSubmit = () => {
-        console.log(this.state.textToSummarize);
-        const requestOptions = {
+    onParaphraseResponseFromBackend(response: any) {
+        let element = document.getElementById("backendResponse")
+        // @ts-ignore
+        element.textContent = response.summarized
+        console.log(`${response.type} : ${response.summarized}`)
+    }
+
+    useSummarize = () => {
+        const paraphraseRequestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -20,23 +26,34 @@ class Shakespeare extends React.Component<{}, {}> {
             })
         }
 
-        function onResponseFromBackend(response: any) {
-            let element = document.getElementById("backendResponse")
-            // @ts-ignore
-            element.textContent = response.summarized
-        }
-
-
-        fetch('http://localhost:8000/api/paraphrase', requestOptions)
+        fetch('http://localhost:8000/api/paraphrase', paraphraseRequestOptions)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
-                onResponseFromBackend(data)
+                this.onParaphraseResponseFromBackend(data)
             });
     };
 
+    useT5 = () => {
+        const T5RequestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                text: this.state.textToSummarize,
+                min_length: 100,
+                max_length: 600,
+
+            })
+        }
+        fetch('http://localhost:8000/api/t5_paraphrase', T5RequestOptions)
+            .then(response => response.json())
+            .then(data => {
+                this.onParaphraseResponseFromBackend(data)
+            });
+    }
+
     componentWillMount() {
-        this.onSubmit = this.onSubmit.bind(this);
+        this.useSummarize = this.useSummarize.bind(this);
+        this.useT5 = this.useT5.bind(this);
         this.setState = this.setState.bind(this)
     }
 
@@ -62,8 +79,14 @@ class Shakespeare extends React.Component<{}, {}> {
                     <Button
                         className="btnFormSend"
                         variant="outline-success"
-                        onClick={this.onSubmit}>
-                        Send Feedback
+                        onClick={this.useSummarize}>
+                        Summarize
+                    </Button>
+                    <Button
+                        className="btnFormSend"
+                        variant="outline-success"
+                        onClick={this.useT5}>
+                        T5 network
                     </Button>
                 </Form.Group>
                 <p id="backendResponse">There would be a response from backend</p>
