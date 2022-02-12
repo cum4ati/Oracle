@@ -10,7 +10,7 @@ class Shakespeare extends React.Component<{}, {}> {
     };
 
     onSubmit = () => {
-        const requestOptions = {
+        const paraphraseRequestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -19,17 +19,34 @@ class Shakespeare extends React.Component<{}, {}> {
             })
         }
 
-        function onResponseFromBackend(response: any) {
+        const T5RequestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                text: this.state.textToSummarize,
+                min_length: 100,
+                max_length: 600,
+
+            })
+        }
+
+        function onParaphraseResponseFromBackend(response: any) {
             let element = document.getElementById("backendResponse")
             // @ts-ignore
             element.textContent = response.summarized
+            console.log(`${response.type} : ${response.summarized}`)
         }
 
 
-        fetch('http://localhost:8000/api/paraphrase', requestOptions)
+        fetch('http://localhost:8000/api/paraphrase', paraphraseRequestOptions)
             .then(response => response.json())
             .then(data => {
-                onResponseFromBackend(data)
+                onParaphraseResponseFromBackend(data)
+            });
+        fetch('http://localhost:8000/api/t5_paraphrase', T5RequestOptions)
+            .then(response => response.json())
+            .then(data => {
+                onParaphraseResponseFromBackend(data)
             });
     };
 
@@ -52,13 +69,13 @@ class Shakespeare extends React.Component<{}, {}> {
                         type="text"/>
                     {/*<Container>*/}
                     {/*    <Row>*/}
-                            <Form.Control
-                                className="sentencesToReturn"
-                                as="textarea"
-                                placeholder="sentences"
-                                value={this.state.sentencesToReturn}
-                                onChange={e => this.setState({sentencesToReturn: e.target.value})}
-                                type="number"/>
+                    <Form.Control
+                        className="sentencesToReturn"
+                        as="textarea"
+                        placeholder="sentences"
+                        value={this.state.sentencesToReturn}
+                        onChange={e => this.setState({sentencesToReturn: e.target.value})}
+                        type="number"/>
 
                     {/*    </Row>*/}
                     {/*</Container>*/}
