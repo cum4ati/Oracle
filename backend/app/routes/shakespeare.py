@@ -17,19 +17,18 @@ async def router_startup():
 
 
 @router.post('/paraphrase', tags=['ml_models_endpoint'])
-async def paraphrase(data: ParaphraseRequestModel):
+async def paraphrase(request_data: ParaphraseRequestModel):
     summary: Summary = Summary()
-    summarized_data = summary.generate_summary(data.text, data.sentences_to_return)
-    return {"text": data.text,
+    summarized_data = summary.generate_summary(request_data.text, request_data.sentences_to_return)
+    return {"text": request_data.text,
             "summarized": summarized_data,
             "type": "math"}
 
 
 @router.post('/t5_paraphrase', tags=['ml_models_endpoint'])
-async def t5_summary(data: T5SummaryRequestModel):
+async def t5_summary(request_data: T5SummaryRequestModel):
     model: T5Summary = models['t5']
-    text = model.summarize(data.text, data.min_length, data.max_length)[0]['summary_text']
-    print(text)
-    return {'text': data.text,
+    text = model.summarize(request_data.text, request_data.min_length, request_data.max_length)[0]['summary_text']
+    return {'text': request_data.text,
             'summarized': text,
             "type": "t5"}
