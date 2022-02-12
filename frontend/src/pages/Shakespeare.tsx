@@ -9,7 +9,14 @@ class Shakespeare extends React.Component<{}, {}> {
         sentencesToReturn: 5
     };
 
-    onSubmit = () => {
+    onParaphraseResponseFromBackend(response: any) {
+        let element = document.getElementById("backendResponse")
+        // @ts-ignore
+        element.textContent = response.summarized
+        console.log(`${response.type} : ${response.summarized}`)
+    }
+
+    useSummarize = () => {
         const paraphraseRequestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -19,6 +26,14 @@ class Shakespeare extends React.Component<{}, {}> {
             })
         }
 
+        fetch('http://localhost:8000/api/paraphrase', paraphraseRequestOptions)
+            .then(response => response.json())
+            .then(data => {
+                this.onParaphraseResponseFromBackend(data)
+            });
+    };
+
+    useT5 = () => {
         const T5RequestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -29,29 +44,16 @@ class Shakespeare extends React.Component<{}, {}> {
 
             })
         }
-
-        function onParaphraseResponseFromBackend(response: any) {
-            let element = document.getElementById("backendResponse")
-            // @ts-ignore
-            element.textContent = response.summarized
-            console.log(`${response.type} : ${response.summarized}`)
-        }
-
-
-        fetch('http://localhost:8000/api/paraphrase', paraphraseRequestOptions)
-            .then(response => response.json())
-            .then(data => {
-                onParaphraseResponseFromBackend(data)
-            });
         fetch('http://localhost:8000/api/t5_paraphrase', T5RequestOptions)
             .then(response => response.json())
             .then(data => {
-                onParaphraseResponseFromBackend(data)
+                this.onParaphraseResponseFromBackend(data)
             });
-    };
+    }
 
     componentWillMount() {
-        this.onSubmit = this.onSubmit.bind(this);
+        this.useSummarize = this.useSummarize.bind(this);
+        this.useT5 = this.useT5.bind(this);
         this.setState = this.setState.bind(this)
     }
 
@@ -67,8 +69,6 @@ class Shakespeare extends React.Component<{}, {}> {
                         value={this.state.textToSummarize}
                         onChange={e => this.setState({textToSummarize: e.target.value})}
                         type="text"/>
-                    {/*<Container>*/}
-                    {/*    <Row>*/}
                     <Form.Control
                         className="sentencesToReturn"
                         as="textarea"
@@ -76,14 +76,17 @@ class Shakespeare extends React.Component<{}, {}> {
                         value={this.state.sentencesToReturn}
                         onChange={e => this.setState({sentencesToReturn: e.target.value})}
                         type="number"/>
-
-                    {/*    </Row>*/}
-                    {/*</Container>*/}
                     <Button
                         className="btnFormSend"
                         variant="outline-success"
-                        onClick={this.onSubmit}>
-                        Send Feedback
+                        onClick={this.useSummarize}>
+                        Summarize
+                    </Button>
+                    <Button
+                        className="btnFormSend"
+                        variant="outline-success"
+                        onClick={this.useT5}>
+                        T5 network
                     </Button>
                 </Form.Group>
                 <p id="backendResponse">There would be a response from backend</p>
