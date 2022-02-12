@@ -1,8 +1,12 @@
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .models.ParaphraseRequestModel import ParaphraseRequestModel
 from .networks.Summary import Summary
+from .networks.T5Summary import T5Summary
+from .routes.shakespeare import router
 
 app = FastAPI()
 
@@ -18,6 +22,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
+
+app.include_router(router)
 
 
 @app.get("/", tags=["root"])

@@ -1,6 +1,6 @@
 import React from 'react';
-import '../App.css';
-import {Button, Form} from "react-bootstrap";
+import '../Shakespeare.css';
+import {Button, Container, Form, Row} from "react-bootstrap";
 
 
 class Shakespeare extends React.Component<{}, {}> {
@@ -10,7 +10,6 @@ class Shakespeare extends React.Component<{}, {}> {
     };
 
     onSubmit = () => {
-        console.log(this.state.textToSummarize);
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -30,7 +29,6 @@ class Shakespeare extends React.Component<{}, {}> {
         fetch('http://localhost:8000/api/paraphrase', requestOptions)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 onResponseFromBackend(data)
             });
     };
@@ -52,13 +50,18 @@ class Shakespeare extends React.Component<{}, {}> {
                         value={this.state.textToSummarize}
                         onChange={e => this.setState({textToSummarize: e.target.value})}
                         type="text"/>
-                    <Form.Control
-                        className="sentencesToReturn"
-                        as="textarea"
-                        placeholder="sentences"
-                        value={this.state.sentencesToReturn}
-                        onChange={e => this.setState({sentencesToReturn: e.target.value})}
-                        type="number"/>
+                    {/*<Container>*/}
+                    {/*    <Row>*/}
+                            <Form.Control
+                                className="sentencesToReturn"
+                                as="textarea"
+                                placeholder="sentences"
+                                value={this.state.sentencesToReturn}
+                                onChange={e => this.setState({sentencesToReturn: e.target.value})}
+                                type="number"/>
+
+                    {/*    </Row>*/}
+                    {/*</Container>*/}
                     <Button
                         className="btnFormSend"
                         variant="outline-success"
