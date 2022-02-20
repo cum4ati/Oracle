@@ -1,6 +1,7 @@
 import logging
 
 from transformers import pipeline
+from summarizer import Summarizer, summarize
 InputText = OutputText = str
 
 

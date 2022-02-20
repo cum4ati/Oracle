@@ -1,6 +1,8 @@
+from summarizer import summarize
+
 from backend.app.models.request_models import ParaphraseRequestModel, T5SummaryRequestModel
 from backend.app.networks.Summary import Summary
-from backend.app.networks.T5Summary import T5Summary
+from backend.app.networks.T5Summary import T5Summary, Summarizer
 from fastapi import APIRouter
 
 router = APIRouter(
@@ -8,7 +10,6 @@ router = APIRouter(
 )
 
 models = {}
-
 
 
 @router.on_event("startup")
@@ -32,3 +33,11 @@ async def t5_summary(request_data: T5SummaryRequestModel):
     return {'text': request_data.text,
             'summarized': text,
             "type": "t5"}
+
+@router.post('/bert_summary', tags=['ml_models_endpoint'])
+async def bert_summary(request_data: T5SummaryRequestModel):
+    model: Summarizer = Summarizer()
+    text = summarize(title='test', count=250, text=request_data.text)
+    return {'text': request_data.text,
+            'summarized': text,
+            "type": "bert"}

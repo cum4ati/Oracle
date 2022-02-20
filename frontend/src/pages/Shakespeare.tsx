@@ -34,13 +34,16 @@ class Shakespeare extends React.Component<{}, {}> {
     };
 
     useT5 = () => {
+        let min_length = Math.ceil((this.state.textToSummarize.replaceAll(".", '').replaceAll(',', '').split(' ').length) * 0.4)
+        let max_length = Math.ceil((this.state.textToSummarize.replaceAll(".", '').replaceAll(',', '').split(' ').length) * 0.8)
+        console.log(`minlen=${min_length}. maxlen=${max_length}`)
         const T5RequestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 text: this.state.textToSummarize,
-                min_length: 100,
-                max_length: 600,
+                min_length: min_length,
+                max_length: max_length,
 
             })
         }
@@ -48,6 +51,7 @@ class Shakespeare extends React.Component<{}, {}> {
             .then(response => response.json())
             .then(data => {
                 this.onParaphraseResponseFromBackend(data)
+                console.log(data.summarized.split(" ").length)
             });
     }
 
