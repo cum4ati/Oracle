@@ -1,8 +1,8 @@
 from summarizer import summarize
 
-from backend.app.models.request_models import ParaphraseRequestModel, T5SummaryRequestModel
-from backend.app.networks.Summary import Summary
-from backend.app.networks.T5Summary import T5Summary, Summarizer
+from ..models.request_models import ParaphraseRequestModel, T5SummaryRequestModel
+from ..networks.Summary import Summary
+from ..networks.T5Summary import T5Summary, Summarizer
 from fastapi import APIRouter
 
 router = APIRouter(

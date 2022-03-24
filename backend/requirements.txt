@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+nltk
+numpy
+networkx
+transformers
+summarizer
+tensorflow
